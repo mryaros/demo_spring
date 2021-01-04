@@ -1,0 +1,26 @@
+version: '3.2'
+services:
+  db:
+    #build: ./postgres
+    image: postgres:13-alpine
+    ports:
+      - 5432:5432
+    volumes:
+      - pg_data:/var/lib/postgresql/data/pg_data
+    environment:
+      POSTGRES_PASSWORD: qwerty
+      POSTGRES_DB: mryaros_db
+      POSTGRES_USER: mryaros
+      POSTGRES_HOST: 0.0.0.0
+      POSTGRES_PORT: 5432
+      PGDATA: /var/lib/postgresql/data/pg_data
+  back:
+    build: .
+    ports:
+      - 8080:8080
+    depends_on:
+      - db
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+volumes:
+  pg_data:

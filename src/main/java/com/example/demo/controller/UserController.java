@@ -1,10 +1,12 @@
 package com.example.demo.controller;
 
+import com.example.demo.BrowserImitator;
 import com.example.demo.dao.UserDao;
 import com.example.demo.entity.User;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,6 +18,11 @@ public class UserController {
 
     @Autowired
     UserDao userDao;
+
+    @Autowired
+    BrowserImitator browserImitator;
+
+    @Value("${python.url}") String pythonUrl;
 
     @GetMapping
     @ApiOperation(value = "Запрос всех пользователей")
@@ -53,5 +60,11 @@ public class UserController {
     @ApiOperation(value = "Поиск пользователей по фамилии")
     public List<User> getUsersBySurname(@PathVariable String surname) {
         return userDao.findBySurnameMy(surname);
+    }
+
+    @GetMapping("/request/{name}")
+    @ApiOperation(value = "Поиск пользователей по имени")
+    public String makePythonRequest(@PathVariable String name) {
+        return browserImitator.get(pythonUrl + name, String.class).orElse("hi");
     }
 }

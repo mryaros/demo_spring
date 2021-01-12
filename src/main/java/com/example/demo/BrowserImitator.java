@@ -1,5 +1,6 @@
 package com.example.demo;
 
+import com.example.demo.entity.User;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
@@ -20,10 +21,17 @@ public class BrowserImitator {
     });
 
 //    @TimeLogging
-    public <T> Optional<T> get(String url, Class<T> type) {
+    public <T> Optional<T> get(String url, Class<T> type, User user) {
         try {
             log.info(String.format("Получение данных по адресу: %s", url));
-            ResponseEntity<T> response = restTemplate.exchange(url, HttpMethod.GET, null, type);
+//            ResponseEntity<T> response = restTemplate.exchange(url, HttpMethod.GET, null, type);
+
+            // set headers
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            HttpEntity<User> entity = new HttpEntity<>(user, headers);
+
+            ResponseEntity<T> response = restTemplate.exchange(url, HttpMethod.POST, entity, type);
             if (response.getStatusCode() != HttpStatus.OK) {
                 log.error(String.format("Статус ответа: %d", response.getStatusCodeValue()));
                 return Optional.empty();

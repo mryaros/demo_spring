@@ -64,7 +64,7 @@ public class UserController {
 
     @GetMapping("/request/{name}")
     @ApiOperation(value = "Поиск пользователей по имени")
-    public String makePythonRequest(@PathVariable String name) {
-        return browserImitator.get(pythonUrl + name, String.class).orElse("hi");
+    public User makePythonRequest(@PathVariable String name) {
+        return browserImitator.get(pythonUrl + name, User.class, userDao.findById(1).orElse(null)).orElse(new User());
     }
 }
